@@ -2,11 +2,13 @@ from fpdf import FPDF
 import pandas as pd 
 
 pdf = FPDF(orientation='P', unit='mm', format='A4')
+pdf.set_auto_page_break(auto=False, margin=0) # disable automatic page break and set margin to 0 to have more control over the layout of the pages
 
 df = pd.read_csv('topics.csv')
 
 for index, row in df.iterrows():
     pdf.add_page()
+
     pdf.set_font(family='Times', style='B', size=12)
     #font size and line are recommeneded to be the same for better readability
 
@@ -17,8 +19,20 @@ for index, row in df.iterrows():
 
     pdf.line(x1=10, y1=20, x2=200, y2=20 )
 
+    #for the footer
+
+    pdf.ln(265) # move the cursor to the bottom of the page
+    pdf.set_font(family='Times', style='I', size=8)
+    pdf.set_text_color(150, 150, 150) # RGB color for the text: light grey
+    pdf.cell(w=0, h=10, txt=row['Topic'], ln=1, align='R')
+
     for i in range(row["Pages"]-1):
         pdf.add_page()
+
+        pdf.ln(277) # move the cursor to the bottom of the page
+        pdf.set_font(family='Times', style='I', size=8)
+        pdf.set_text_color(150, 150, 150) # RGB color for the text: light grey
+        pdf.cell(w=0, h=10, txt=row['Topic'], ln=1, align='R')
         
 
 pdf.output('output.pdf')
